@@ -71,6 +71,45 @@ REPOS
 
   protected
 
+  def show_product(target)
+    product = find_products(target).first
+
+    raise ProductNotFoundException.new(_('No product found for target %{target}.') % { target: target }) if product.blank?
+
+    puts _('Product: %{name} (id: %{id})') % { name: product.friendly_name, id: product.id }
+    puts _('Description: %{description}') % { description: product.description }
+    show_product_repos(product)
+  rescue ProductNotFoundException => e
+    puts e.message
+  end
+
+  def show_product_repos(product)
+    # disabled due to the rare bug in rubocop up to 0.59.1
+    # https://github.com/department-of-veterans-affairs/caseflow/issues/8488
+    # rubocop:disable Style/FormatStringToken
+
+    repos = product.repositories
+      .pluck(:name, :scc_id, :enabled, :mirroring_enabled, :last_mirrored_at)
+
+    if repos.blank?
+      puts _('Repositories are not available for this product.')
+    else
+      puts _('Repositories:')
+      repos.each do |repo|
+        repo[2] = repo[2] ? 'mandatory' : 'non-mandatory'
+        repo[3] = repo[3] ? 'enabled' : 'not enabled'
+        repo[4] = case repo[4].present?
+                  when true then 'mirrored at %{datetime}' % { datetime: repo[4].strftime('%Y-%m-%d %H:%M:%S %Z') }
+                  when false then 'not mirrored'
+                  end
+        puts _('* %{name} (id: %{id}) (%{mandatory}, %{enabled}, %{last_mirrored})') % {
+          name: repo[0], id: repo[1], mandatory: repo[2], enabled: repo[3], last_mirrored: repo[4]
+        }
+      end
+    end
+    # rubocop:enable Style/FormatStringToken
+  end
+
   def change_products(targets, set_enabled, all_modules)
     targets = clean_target_input(targets)
     raise RMT::CLI::Error.new(_('No product IDs supplied')) if targets.empty?
