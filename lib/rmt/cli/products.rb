@@ -98,10 +98,6 @@ class RMT::CLI::Products < RMT::CLI::Base
   end
 
   def show_product_repos(product)
-    # disabled due to the rare bug in rubocop up to 0.59.1
-    # https://github.com/department-of-veterans-affairs/caseflow/issues/8488
-    # rubocop:disable Style/FormatStringToken
-
     repos = product.repositories
       .pluck(:name, :scc_id, :enabled, :mirroring_enabled, :last_mirrored_at)
 
@@ -112,13 +108,10 @@ class RMT::CLI::Products < RMT::CLI::Base
       repos.each do |repo|
         repo[2] = repo[2] ? 'mandatory' : 'non-mandatory'
         repo[3] = repo[3] ? 'enabled' : 'not enabled'
-        repo[4] = repo[4].present? ? 'mirrored at %{datetime}' % { datetime: repo[4].strftime('%Y-%m-%d %H:%M:%S %Z') } : 'not mirrored'
-        puts _('* %{name} (id: %{id}) (%{mandatory}, %{enabled}, %{last_mirrored})') % {
-          name: repo[0], id: repo[1], mandatory: repo[2], enabled: repo[3], last_mirrored: repo[4]
-        }
+        repo[4] = repo[4].present? ? "mirrored at #{repo[4].strftime('%Y-%m-%d %H:%M:%S %Z')}" : 'not mirrored'
+        puts _("* #{repo[0]} (id: #{repo[1]}) (#{repo[2]}, #{repo[3]}, #{repo[4]})")
       end
     end
-    # rubocop:enable Style/FormatStringToken
   end
 
   def change_products(targets, set_enabled, all_modules)
