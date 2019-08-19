@@ -100,17 +100,13 @@ class RMT::CLI::Products < RMT::CLI::Base
   def show_product_repos(product)
     repos = product.repositories
       .pluck(:name, :scc_id, :enabled, :mirroring_enabled, :last_mirrored_at)
-
-    if repos.blank?
-      puts _('Repositories are not available for this product.')
-    else
-      puts _('Repositories:')
-      repos.each do |repo|
-        repo[2] = repo[2] ? 'mandatory' : 'non-mandatory'
-        repo[3] = repo[3] ? 'enabled' : 'not enabled'
-        repo[4] = repo[4].present? ? "mirrored at #{repo[4].strftime('%Y-%m-%d %H:%M:%S %Z')}" : 'not mirrored'
-        puts _("* #{repo[0]} (id: #{repo[1]}) (#{repo[2]}, #{repo[3]}, #{repo[4]})")
-      end
+    raise RMT::CLI::Error.new(_('Repositories are not available for this product.')) if repos.blank?
+    puts _('Repositories:')
+    repos.each do |repo|
+      repo[2] = repo[2] ? 'mandatory' : 'non-mandatory'
+      repo[3] = repo[3] ? 'enabled' : 'not enabled'
+      repo[4] = repo[4].present? ? "mirrored at #{repo[4].strftime('%Y-%m-%d %H:%M:%S %Z')}" : 'not mirrored'
+      puts _("* #{repo[0]} (id: #{repo[1]}) (#{repo[2]}, #{repo[3]}, #{repo[4]})")
     end
   end
 
