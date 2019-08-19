@@ -112,10 +112,7 @@ class RMT::CLI::Products < RMT::CLI::Base
       repos.each do |repo|
         repo[2] = repo[2] ? 'mandatory' : 'non-mandatory'
         repo[3] = repo[3] ? 'enabled' : 'not enabled'
-        repo[4] = case repo[4].present?
-                  when true then 'mirrored at %{datetime}' % { datetime: repo[4].strftime('%Y-%m-%d %H:%M:%S %Z') }
-                  when false then 'not mirrored'
-                  end
+        repo[4] = repo[4].present? ? 'mirrored at %{datetime}' % { datetime: repo[4].strftime('%Y-%m-%d %H:%M:%S %Z') } : 'not mirrored'
         puts _('* %{name} (id: %{id}) (%{mandatory}, %{enabled}, %{last_mirrored})') % {
           name: repo[0], id: repo[1], mandatory: repo[2], enabled: repo[3], last_mirrored: repo[4]
         }
