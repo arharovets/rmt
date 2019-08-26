@@ -108,9 +108,9 @@ class RMT::CLI::Products < RMT::CLI::Base
       repo[2] = repo[2] ? _('mandatory') : _('non-mandatory')
       repo[3] = repo[3] ? _('enabled') : _('not enabled')
       repo[4] = repo[4].present? ? _('mirrored at %{time}') % { time: repo[4].strftime('%Y-%m-%d %H:%M:%S %Z') } : _('not mirrored')
-      puts _('* %{name} (id: %{id}) (%{mandatory}, %{enabled}, %{mirrored})') % {
-        name: repo[0], id: repo[1], mandatory: repo[2], enabled: repo[3], mirrored: repo[4]
-      }
+      template = '* %{name} (id: %{id}) (%{mandatory}, %{enabled}, %{mirrored})'
+      data = { name: repo[0], id: repo[1], mandatory: repo[2], enabled: repo[3], mirrored: repo[4] }
+      puts _(template) % data
     end
     # rubocop:enable Style/FormatStringToken
   end
