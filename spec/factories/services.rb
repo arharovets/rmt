@@ -17,15 +17,13 @@ FactoryGirl.define do
             :repository,
             name: "#{name_prefix}-Installer-Updates",
             mirroring_enabled: evaluator.mirroring_enabled,
-            installer_updates: true,
-            enabled: false
+            installer_updates: true
           ),
           FactoryGirl.create(
             :repository,
             name: "#{name_prefix}-Debuginfo-Updates",
             mirroring_enabled: evaluator.mirroring_enabled,
-            installer_updates: false,
-            enabled: false
+            installer_updates: false
           )
         ]
       end
