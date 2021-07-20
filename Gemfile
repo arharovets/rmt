@@ -8,7 +8,7 @@ end
 gem 'puma', '3.12.4'
 gem 'mysql2', '~> 0.5.3'
 
-gem 'nokogiri', '~> 1.10.3'
+gem 'nokogiri', '~> 1.11.4'
 gem 'thor'
 gem 'activesupport', '~> 5.1.3'
 gem 'actionpack', '~> 5.1.3'
